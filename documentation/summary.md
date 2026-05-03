@@ -24,7 +24,7 @@ src/
 ├── index.css                   Tailwind import + viewport lock (100dvh, no scroll, no overscroll)
 ├── App.jsx                     All state lives here. Orchestrates modals and results.
 ├── components/
-│   ├── BottomSheet.jsx         Modal overlay (instant appear, no animation). Blurs active element on open.
+│   ├── BottomSheet.jsx         Modal overlay with dialog semantics, focus management, and Escape to close.
 │   ├── NumberPad.jsx           Reusable digit pad. Handles keyboard input too.
 │   ├── SpeedInput.jsx          Single value + MPH/KPH toggle
 │   ├── PaceInput.jsx           Min:Sec slots + Per Mile/Per KM toggle
@@ -129,7 +129,7 @@ The 2x2 result cards match the same positions as the 2x2 input buttons (Speed to
 
 2. **NumberPad uses a ref for callbacks** (`callbacksRef`) to avoid stale closures in the `keydown` listener. The effect registers once (empty deps) and reads the ref on each keystroke.
 
-3. **All buttons in modals are `tabIndex={-1}`** to prevent focus. The `BottomSheet` also calls `document.activeElement?.blur()` on open to kill any lingering focus from the trigger button.
+3. **All buttons in modals are `tabIndex={-1}`** to prevent focus. The `BottomSheet` manages focus itself: it saves the previously focused element, focuses the dialog container on open, and restores focus on close.
 
 4. **Distance presets auto-close the modal.** They call `onDone()` directly rather than just setting the display value.
 
@@ -140,3 +140,50 @@ The 2x2 result cards match the same positions as the 2x2 input buttons (Speed to
 7. **No localStorage yet.** Unit preferences reset on refresh. This was noted as a future enhancement in the original plan.
 
 8. **No animations yet.** The plan mentions possibly adding a bottom-sheet slide-up later. Currently instant show/hide.
+
+---
+
+## Accessibility
+
+The app is designed to be ADA/WCAG compliant without compromising the streamlined UX for non-AT users. The key insight is that WCAG requires *keyboard operability*, not specifically Tab-based navigation — so the custom keyboard model (Tab switches slots, digits type directly, Enter submits) is a valid "composite widget" pattern that works for both sighted keyboard users and screen reader users in forms/focus mode.
+
+### What we kept and why
+
+The original keyboard interaction model inside modals was preserved exactly:
+- All number pad buttons, slot selectors, unit toggles, and Done stay `tabIndex={-1}` with `onPointerDown`. These are touch/pointer targets; keyboard input is handled by the global `keydown` listener.
+- Tab still switches between slots (H/M/S, M/S) via `preventDefault()` + custom handler. This is more convenient than standard Tab navigation for this type of input and is WCAG-compliant as a custom widget keyboard pattern.
+- Enter still submits via the global handler. Escape now also closes the modal.
+
+Making these elements focusable and Tab-navigable was attempted and reverted — it forced users to Tab through buttons, press Enter to "select" them, and broke the direct-typing flow. Standard focus management is the wrong model for a calculator-style input.
+
+### What was added for compliance
+
+**Dialog semantics (BottomSheet.jsx):**
+- `role="dialog"`, `aria-modal="true"`, and `aria-label` (e.g. "Edit Speed") so screen readers announce the modal and its purpose.
+- Focus management: saves previously focused element on open, focuses the dialog container, restores focus on close. Replaces the old `document.activeElement?.blur()` approach.
+- Escape key closes the modal.
+- Backdrop has `aria-hidden="true"` to keep screen readers inside the dialog.
+
+**ARIA attributes across all input components:**
+- `aria-live="polite"` on value displays (SpeedInput, DistanceInput) so screen readers announce value changes.
+- `aria-label` on slot buttons ("Hours: 0", "Minutes: 5", etc.) so screen readers can identify each slot.
+- `aria-pressed` on unit toggles (MPH/KPH, Miles/KM, Per Mile/Per KM) and slot selectors to indicate active state.
+- `aria-hidden="true"` on decorative colon separators in PaceInput and TimeInput so screen readers don't read "colon".
+- `role="group"` with `aria-label` on button groups (unit toggles, number pad, slot selectors, race presets).
+- `aria-label="Backspace"` and `aria-label="Decimal point"` on NumberPad special buttons.
+
+**Main page (App.jsx):**
+- Clear buttons changed from `<span>` to proper `<button>` elements with `aria-label` (e.g. "Clear speed"). Restructured as siblings of the main button rather than nested inside it (nested buttons are invalid HTML).
+- Each input button has `aria-label` including its current value (e.g. "Edit speed: 7.5 MPH").
+- Results container has `aria-live="polite"` for dynamic content updates.
+
+**Results tables (Results.jsx):**
+- `scope="col"` on column headers, `scope="row"` on row headers (first column changed from `<td>` to `<th>`).
+- `aria-label` on each `<table>` describing its purpose (e.g. "Completion times by race distance").
+- Screen-reader-only `<h2>` headings above each results section for navigation.
+- `aria-label` on bolded "relevant" race rows in TimeOnly view (e.g. "5K (likely match)").
+- `role="group"` with `aria-label` on the 2x2 result cards.
+- Label text color bumped from `text-gray-500` to `text-gray-600` for WCAG AA contrast compliance.
+
+**CSS (index.css):**
+- Added `.sr-only` utility class for screen-reader-only content (visually hidden, accessible to AT).
