@@ -60,23 +60,25 @@ export default function DistanceInput({ value, unit, onChangeUnit, onDone }) {
   return (
     <div className="flex flex-col gap-3">
       <div className="text-center">
-        <div className="text-4xl font-light h-12 flex items-center justify-center tabular-nums">
+        <div className="text-4xl font-light h-12 flex items-center justify-center tabular-nums" aria-live="polite" aria-label={`Distance: ${display || '0'} ${unit === 'miles' ? 'miles' : 'kilometers'}`}>
           {display || '0'}
         </div>
-        <div className="flex justify-center gap-1 mt-2">
+        <div className="flex justify-center gap-1 mt-2" role="group" aria-label="Distance unit">
           <button
             tabIndex={-1}
             className={`px-4 py-1.5 rounded-full text-sm font-medium outline-none ${unit === 'miles' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700'}`}
+            aria-pressed={unit === 'miles'}
             onPointerDown={(e) => { e.preventDefault(); onChangeUnit('miles'); }}
           >Miles</button>
           <button
             tabIndex={-1}
             className={`px-4 py-1.5 rounded-full text-sm font-medium outline-none ${unit === 'km' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700'}`}
+            aria-pressed={unit === 'km'}
             onPointerDown={(e) => { e.preventDefault(); onChangeUnit('km'); }}
           >Kilometers</button>
         </div>
       </div>
-      <div className="flex flex-wrap justify-center gap-1.5 px-2">
+      <div className="flex flex-wrap justify-center gap-1.5 px-2" role="group" aria-label="Race distance presets">
         {RACE_DISTANCES.map(race => (
           <button
             key={race.label}

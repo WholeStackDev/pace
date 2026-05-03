@@ -128,43 +128,51 @@ export default function App() {
 
       {/* Input buttons - 2x2 grid */}
       <div className="grid grid-cols-2 gap-2 px-3 pb-3 shrink-0">
-        <button className={`${btnBase} ${btnActive}`} onClick={() => setActiveModal('speed')}>
-          <span className="text-xs text-gray-500">Speed</span>
-          <span className="text-sm font-semibold tabular-nums">{speedLabel}</span>
+        <div className="relative">
+          <button className={`${btnBase} ${btnActive} w-full`} onClick={() => setActiveModal('speed')} aria-label={`Edit speed: ${speedLabel}`}>
+            <span className="text-xs text-gray-500">Speed</span>
+            <span className="text-sm font-semibold tabular-nums">{speedLabel}</span>
+          </button>
           {speedMph > 0 && (
-            <span className="absolute top-1 right-1 w-5 h-5 flex items-center justify-center text-gray-400 text-xs" onClick={(e) => clearValue('speed', e)}>✕</span>
+            <button className="absolute top-1 right-1 w-5 h-5 flex items-center justify-center text-gray-400 text-xs rounded-full focus-visible:ring-2 focus-visible:ring-blue-400" onClick={(e) => clearValue('speed', e)} aria-label="Clear speed">✕</button>
           )}
-        </button>
-        <button className={`${btnBase} ${btnActive}`} onClick={() => setActiveModal('pace')}>
-          <span className="text-xs text-gray-500">Pace</span>
-          <span className="text-sm font-semibold tabular-nums">{paceLabel}</span>
+        </div>
+        <div className="relative">
+          <button className={`${btnBase} ${btnActive} w-full`} onClick={() => setActiveModal('pace')} aria-label={`Edit pace: ${paceLabel}`}>
+            <span className="text-xs text-gray-500">Pace</span>
+            <span className="text-sm font-semibold tabular-nums">{paceLabel}</span>
+          </button>
           {speedMph > 0 && (
-            <span className="absolute top-1 right-1 w-5 h-5 flex items-center justify-center text-gray-400 text-xs" onClick={(e) => clearValue('speed', e)}>✕</span>
+            <button className="absolute top-1 right-1 w-5 h-5 flex items-center justify-center text-gray-400 text-xs rounded-full focus-visible:ring-2 focus-visible:ring-blue-400" onClick={(e) => clearValue('speed', e)} aria-label="Clear pace">✕</button>
           )}
-        </button>
-        <button className={`${btnBase} ${btnActive}`} onClick={() => setActiveModal('time')}>
-          <span className="text-xs text-gray-500">Time</span>
-          <span className="text-sm font-semibold tabular-nums">{timeLabel}</span>
+        </div>
+        <div className="relative">
+          <button className={`${btnBase} ${btnActive} w-full`} onClick={() => setActiveModal('time')} aria-label={`Edit time: ${timeLabel}`}>
+            <span className="text-xs text-gray-500">Time</span>
+            <span className="text-sm font-semibold tabular-nums">{timeLabel}</span>
+          </button>
           {timeSeconds > 0 && (
-            <span className="absolute top-1 right-1 w-5 h-5 flex items-center justify-center text-gray-400 text-xs" onClick={(e) => clearValue('time', e)}>✕</span>
+            <button className="absolute top-1 right-1 w-5 h-5 flex items-center justify-center text-gray-400 text-xs rounded-full focus-visible:ring-2 focus-visible:ring-blue-400" onClick={(e) => clearValue('time', e)} aria-label="Clear time">✕</button>
           )}
-        </button>
-        <button className={`${btnBase} ${btnActive}`} onClick={() => setActiveModal('distance')}>
-          <span className="text-xs text-gray-500">Distance</span>
-          <span className="text-sm font-semibold tabular-nums">{distanceLabel}</span>
+        </div>
+        <div className="relative">
+          <button className={`${btnBase} ${btnActive} w-full`} onClick={() => setActiveModal('distance')} aria-label={`Edit distance: ${distanceLabel}`}>
+            <span className="text-xs text-gray-500">Distance</span>
+            <span className="text-sm font-semibold tabular-nums">{distanceLabel}</span>
+          </button>
           {distanceMiles > 0 && (
-            <span className="absolute top-1 right-1 w-5 h-5 flex items-center justify-center text-gray-400 text-xs" onClick={(e) => clearValue('distance', e)}>✕</span>
+            <button className="absolute top-1 right-1 w-5 h-5 flex items-center justify-center text-gray-400 text-xs rounded-full focus-visible:ring-2 focus-visible:ring-blue-400" onClick={(e) => clearValue('distance', e)} aria-label="Clear distance">✕</button>
           )}
-        </button>
+        </div>
       </div>
 
       {/* Results */}
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto" aria-live="polite">
         <Results speedMph={speedMph} timeSeconds={timeSeconds} distanceMiles={distanceMiles} />
       </div>
 
       {/* Modals */}
-      <BottomSheet open={activeModal === 'speed'} onClose={() => setActiveModal(null)}>
+      <BottomSheet open={activeModal === 'speed'} onClose={() => setActiveModal(null)} title="Edit Speed">
         <SpeedInput
           value={speedDisplayValue ? parseFloat(speedDisplayValue.toFixed(2)) : 0}
           unit={speedUnit}
@@ -173,7 +181,7 @@ export default function App() {
         />
       </BottomSheet>
 
-      <BottomSheet open={activeModal === 'pace'} onClose={() => setActiveModal(null)}>
+      <BottomSheet open={activeModal === 'pace'} onClose={() => setActiveModal(null)} title="Edit Pace">
         <PaceInput
           minutes={paceMinutes}
           seconds={paceSeconds}
@@ -183,7 +191,7 @@ export default function App() {
         />
       </BottomSheet>
 
-      <BottomSheet open={activeModal === 'time'} onClose={() => setActiveModal(null)}>
+      <BottomSheet open={activeModal === 'time'} onClose={() => setActiveModal(null)} title="Edit Time">
         <TimeInput
           hours={h}
           minutes={m}
@@ -192,7 +200,7 @@ export default function App() {
         />
       </BottomSheet>
 
-      <BottomSheet open={activeModal === 'distance'} onClose={() => setActiveModal(null)}>
+      <BottomSheet open={activeModal === 'distance'} onClose={() => setActiveModal(null)} title="Edit Distance">
         <DistanceInput
           value={distanceDisplayValue ? parseFloat(distanceDisplayValue.toFixed(3)) : 0}
           unit={distanceUnit}

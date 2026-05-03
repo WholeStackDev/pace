@@ -33,19 +33,19 @@ export default function NumberPad({ onDigit, onDecimal, onBackspace, onDone, onT
   const btn = "flex items-center justify-center h-12 rounded-lg bg-gray-100 active:bg-gray-300 text-xl font-medium select-none touch-manipulation outline-none";
 
   return (
-    <div className="grid grid-cols-3 gap-2 px-2">
+    <div className="grid grid-cols-3 gap-2 px-2" role="group" aria-label="Number pad — type digits directly, Tab to switch slots, Enter to confirm">
       {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(n => (
         <button key={n} tabIndex={-1} className={btn} onPointerDown={(e) => { e.preventDefault(); onDigit(String(n)); }}>
           {n}
         </button>
       ))}
       {showDecimal ? (
-        <button tabIndex={-1} className={btn} onPointerDown={(e) => { e.preventDefault(); onDecimal(); }}>.</button>
+        <button tabIndex={-1} className={btn} onPointerDown={(e) => { e.preventDefault(); onDecimal(); }} aria-label="Decimal point">.</button>
       ) : (
         <div />
       )}
       <button tabIndex={-1} className={btn} onPointerDown={(e) => { e.preventDefault(); onDigit('0'); }}>0</button>
-      <button tabIndex={-1} className={btn + " text-2xl"} onPointerDown={(e) => { e.preventDefault(); onBackspace(); }}>⌫</button>
+      <button tabIndex={-1} className={btn + " text-2xl"} onPointerDown={(e) => { e.preventDefault(); onBackspace(); }} aria-label="Backspace">⌫</button>
       <button
         tabIndex={-1}
         className="col-span-3 h-11 rounded-lg bg-blue-600 active:bg-blue-700 text-white font-semibold text-lg select-none touch-manipulation outline-none"

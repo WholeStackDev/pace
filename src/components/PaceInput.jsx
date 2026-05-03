@@ -60,26 +60,28 @@ export default function PaceInput({ minutes, seconds, unit, onChangeUnit, onDone
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex items-center gap-2 px-6">
-        <button tabIndex={-1} className={slotClass('m')} onPointerDown={(e) => { e.preventDefault(); switchSlot('m'); }}>
+      <div className="flex items-center gap-2 px-6" role="group" aria-label="Pace value">
+        <button tabIndex={-1} className={slotClass('m')} aria-label={`Minutes: ${m || '0'}`} aria-pressed={activeSlot === 'm'} onPointerDown={(e) => { e.preventDefault(); switchSlot('m'); }}>
           <span className="text-3xl">{m || '0'}</span>
           <span className="text-xs text-gray-500 ml-1">min</span>
         </button>
-        <span className="text-2xl text-gray-400">:</span>
-        <button tabIndex={-1} className={slotClass('s')} onPointerDown={(e) => { e.preventDefault(); switchSlot('s'); }}>
+        <span className="text-2xl text-gray-400" aria-hidden="true">:</span>
+        <button tabIndex={-1} className={slotClass('s')} aria-label={`Seconds: ${s || '0'}`} aria-pressed={activeSlot === 's'} onPointerDown={(e) => { e.preventDefault(); switchSlot('s'); }}>
           <span className="text-3xl">{s || '0'}</span>
           <span className="text-xs text-gray-500 ml-1">sec</span>
         </button>
       </div>
-      <div className="flex justify-center gap-1">
+      <div className="flex justify-center gap-1" role="group" aria-label="Pace unit">
         <button
           tabIndex={-1}
           className={`px-4 py-1.5 rounded-full text-sm font-medium outline-none ${unit === 'mile' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700'}`}
+          aria-pressed={unit === 'mile'}
           onPointerDown={(e) => { e.preventDefault(); onChangeUnit('mile'); }}
         >Per Mile</button>
         <button
           tabIndex={-1}
           className={`px-4 py-1.5 rounded-full text-sm font-medium outline-none ${unit === 'km' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700'}`}
+          aria-pressed={unit === 'km'}
           onPointerDown={(e) => { e.preventDefault(); onChangeUnit('km'); }}
         >Per KM</button>
       </div>

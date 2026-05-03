@@ -70,18 +70,18 @@ export default function TimeInput({ hours, minutes, seconds, onDone }) {
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex items-center gap-1 px-4">
-        <button tabIndex={-1} className={slotClass('h')} onPointerDown={(e) => { e.preventDefault(); switchSlot('h'); }}>
+      <div className="flex items-center gap-1 px-4" role="group" aria-label="Time value">
+        <button tabIndex={-1} className={slotClass('h')} aria-label={`Hours: ${h || '0'}`} aria-pressed={activeSlot === 'h'} onPointerDown={(e) => { e.preventDefault(); switchSlot('h'); }}>
           <span className="text-3xl">{h || '0'}</span>
           <span className="text-xs text-gray-500 ml-1">h</span>
         </button>
-        <span className="text-2xl text-gray-400">:</span>
-        <button tabIndex={-1} className={slotClass('m')} onPointerDown={(e) => { e.preventDefault(); switchSlot('m'); }}>
+        <span className="text-2xl text-gray-400" aria-hidden="true">:</span>
+        <button tabIndex={-1} className={slotClass('m')} aria-label={`Minutes: ${m || '0'}`} aria-pressed={activeSlot === 'm'} onPointerDown={(e) => { e.preventDefault(); switchSlot('m'); }}>
           <span className="text-3xl">{m || '0'}</span>
           <span className="text-xs text-gray-500 ml-1">m</span>
         </button>
-        <span className="text-2xl text-gray-400">:</span>
-        <button tabIndex={-1} className={slotClass('s')} onPointerDown={(e) => { e.preventDefault(); switchSlot('s'); }}>
+        <span className="text-2xl text-gray-400" aria-hidden="true">:</span>
+        <button tabIndex={-1} className={slotClass('s')} aria-label={`Seconds: ${s || '0'}`} aria-pressed={activeSlot === 's'} onPointerDown={(e) => { e.preventDefault(); switchSlot('s'); }}>
           <span className="text-3xl">{s || '0'}</span>
           <span className="text-xs text-gray-500 ml-1">s</span>
         </button>

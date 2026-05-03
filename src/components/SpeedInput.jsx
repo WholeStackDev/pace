@@ -51,18 +51,20 @@ export default function SpeedInput({ value, unit, onChangeUnit, onDone }) {
   return (
     <div className="flex flex-col gap-3">
       <div className="text-center">
-        <div className="text-4xl font-light h-12 flex items-center justify-center tabular-nums">
+        <div className="text-4xl font-light h-12 flex items-center justify-center tabular-nums" aria-live="polite" aria-label={`Speed: ${display || '0'} ${unit.toUpperCase()}`}>
           {display || '0'}
         </div>
-        <div className="flex justify-center gap-1 mt-2">
+        <div className="flex justify-center gap-1 mt-2" role="group" aria-label="Speed unit">
           <button
             tabIndex={-1}
             className={`px-4 py-1.5 rounded-full text-sm font-medium outline-none ${unit === 'mph' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700'}`}
+            aria-pressed={unit === 'mph'}
             onPointerDown={(e) => { e.preventDefault(); onChangeUnit('mph'); }}
           >MPH</button>
           <button
             tabIndex={-1}
             className={`px-4 py-1.5 rounded-full text-sm font-medium outline-none ${unit === 'kph' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700'}`}
+            aria-pressed={unit === 'kph'}
             onPointerDown={(e) => { e.preventDefault(); onChangeUnit('kph'); }}
           >KPH</button>
         </div>
